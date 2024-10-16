@@ -1,3 +1,5 @@
+namespace Minecraft.UWP;
+
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -21,7 +23,7 @@ interface IPackageDebugSettings
 
     int EnumerateBackgroundTasks(string packageFullName, nint taskCount, nint taskIds, nint taskNames);
 
-    int ActivateBackgroundTask(ref Guid taskId);
+    int ActivateBackgroundTask(nint taskId);
 
     int StartServicing(string packageFullName);
 
@@ -32,14 +34,15 @@ interface IPackageDebugSettings
     int StopSessionRedirection(string packageFullName);
 
     int GetPackageExecutionState(string packageFullName, out PackageExecutionState packageExecutionState);
+
+    int RegisterForPackageStateChanges(string packageFullName, nint pPackageExecutionStateChangeNotification, nint pdwCookie);
+
+    int UnregisterForPackageStateChanges(uint dwCookie);
 }
 
 [ComImport, Guid("B1AEC16F-2383-4852-B0E9-8F0B1DC66B4D")]
 sealed class PackageDebugSettings : IPackageDebugSettings
 {
-    [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-    public extern int GetPackageExecutionState(string packageFullName, out PackageExecutionState packageExecutionState);
-
     [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
     public extern int EnableDebugging(string packageFullName, string debuggerCommandLine, string environment);
 
@@ -62,7 +65,7 @@ sealed class PackageDebugSettings : IPackageDebugSettings
     public extern int EnumerateBackgroundTasks(string packageFullName, nint taskCount, nint taskIds, nint taskNames);
 
     [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-    public extern int ActivateBackgroundTask(ref Guid taskId);
+    public extern int ActivateBackgroundTask(nint taskId);
 
     [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
     public extern int StartServicing(string packageFullName);
@@ -72,7 +75,16 @@ sealed class PackageDebugSettings : IPackageDebugSettings
 
     [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
     public extern int StartSessionRedirection(string packageFullName, ulong sessionId);
+
     [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
     public extern int StopSessionRedirection(string packageFullName);
 
+    [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
+    public extern int GetPackageExecutionState(string packageFullName, out PackageExecutionState packageExecutionState);
+
+    [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
+    public extern int RegisterForPackageStateChanges(string packageFullName, nint pPackageExecutionStateChangeNotification, nint pdwCookie);
+
+    [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
+    public extern int UnregisterForPackageStateChanges(uint dwCookie);
 }

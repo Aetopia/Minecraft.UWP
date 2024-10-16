@@ -14,26 +14,22 @@ public sealed class Game
 {
     static readonly ApplicationActivationManager applicationActivationManager = new();
 
-    static readonly PackageManager packageManager = new();
-
     static readonly PackageDebugSettings packageDebugSettings = new();
 
-    const string packageFamilyName = "Microsoft.MinecraftUWP_8wekyb3d8bbwe";
-
-    const string appUserModelId = "Microsoft.MinecraftUWP_8wekyb3d8bbwe!App";
+    static readonly PackageManager packageManager = new();
 
     public readonly int ProcessId;
 
     internal Game(int processId) => ProcessId = processId;
 
-    public static int Launch()
+    public static Game Launch()
     {
-        var package = packageManager.FindPackagesForUser(string.Empty, packageFamilyName).FirstOrDefault() ?? throw new Win32Exception(Native.ERROR_INSTALL_PACKAGE_NOT_FOUND);
-        Marshal.ThrowExceptionForHR(packageDebugSettings.GetPackageExecutionState(package.Id.FullName, out var packageExecutionState));
+        var package = packageManager.FindPackagesForUser(string.Empty, "Microsoft.MinecraftUWP_8wekyb3d8bbwe").FirstOrDefault() ?? throw new Win32Exception(Native.ERROR_INSTALL_PACKAGE_NOT_FOUND);
         Marshal.ThrowExceptionForHR(packageDebugSettings.EnableDebugging(package.Id.FullName, default, default));
-        
+        Marshal.ThrowExceptionForHR(packageDebugSettings.GetPackageExecutionState(package.Id.FullName, out var packageExecutionState));
+
         using ManualResetEventSlim @event = new(packageExecutionState is not PackageExecutionState.Unknown or PackageExecutionState.Terminated);
-        using FileSystemWatcher watcher = new(ApplicationDataManager.CreateForPackageFamily(packageFamilyName).LocalFolder.Path)
+        using FileSystemWatcher watcher = new(ApplicationDataManager.CreateForPackageFamily(package.Id.FamilyName).LocalFolder.Path)
         {
             NotifyFilter = NotifyFilters.FileName,
             IncludeSubdirectories = true,
@@ -41,10 +37,11 @@ public sealed class Game
         };
         watcher.Deleted += (_, e) => { if (e.Name.Equals(@"games\com.mojang\minecraftpe\resource_init_lock", StringComparison.OrdinalIgnoreCase)) @event.Set(); };
 
-        Marshal.ThrowExceptionForHR(applicationActivationManager.ActivateApplication(appUserModelId, default, Native.AO_NOERRORUI, out var processId)); @event.Wait(); return processId;
+        Marshal.ThrowExceptionForHR(applicationActivationManager.ActivateApplication(package.GetAppListEntries()[0].AppUserModelId, default, Native.AO_NOERRORUI, out var processId));
+        @event.Wait(); return new(processId);
     }
 
-    public static async Task<int> LaunchAsync() => await Task.Run(Launch).ConfigureAwait(false);
+    public static async Task<Game> LaunchAsync() => await Task.Run(Launch).ConfigureAwait(false);
 
     public void Load(string path) => Library.Load(ProcessId, Path.GetFullPath(path));
 

@@ -1,3 +1,5 @@
+namespace Minecraft.UWP;
+
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.InteropServices;
