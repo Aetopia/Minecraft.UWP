@@ -1,13 +1,35 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>net481</TargetFramework>
     <LangVersion>latest</LangVersion>
     <NoWarn>IDE0130</NoWarn>
     <Optimize>true</Optimize>
+    <PublishRelease>true</PublishRelease>
+    <PackRelease>true</PackRelease>
+
+    <PackageId>Minecraft.UWP</PackageId>
+    <Title>Minecraft.UWP</Title>
+    <Version>1.0.0.0</Version>
+    <Description>A library that provides various methods to interact with Minecraft: Bedrock Edition for Windows.
+    </Description>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Aetopia</Authors>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/Aetopia/Minecraft.UWP/</RepositoryUrl>
+
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <AssemblyTitle>Minecraft.UWP</AssemblyTitle>
+    <Product>Minecraft.UWP</Product>
+    <Copyright>Copyright (C) 2024</Copyright>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
   </PropertyGroup>
-  
+
   <ItemGroup>
+    <None Include="../LICENSE" Pack="true" Visible="false" PackagePath="" />
+    <None Include="../README.md" Pack="true" Visible="false" PackagePath="" />
     <PackageReference Include="Microsoft.Windows.SDK.Contracts" Version="10.0.19041.2" />
   </ItemGroup>
 </Project>

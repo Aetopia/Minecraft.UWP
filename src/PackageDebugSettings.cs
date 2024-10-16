@@ -1,8 +1,8 @@
 namespace Minecraft.UWP;
 
 using System;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Runtime.CompilerServices;
 
 enum PackageExecutionState { Unknown, Running, Suspending, Suspended, Terminated }
 

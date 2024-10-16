@@ -1,11 +1,11 @@
 namespace Minecraft.UWP;
 
-using System.ComponentModel;
 using System.IO;
-using System.Runtime.InteropServices;
-using System.Security.AccessControl;
-using System.Security.Principal;
 using System.Threading;
+using System.ComponentModel;
+using System.Security.Principal;
+using System.Security.AccessControl;
+using System.Runtime.InteropServices;
 
 static class Library
 {
